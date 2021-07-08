@@ -1,0 +1,70 @@
+JavaScript code currency problem with the float-precision 
+
+function checkCashRegister(price, cash, cid) {
+  let reminder;
+
+  let change = cash - price;
+  let current_cur = 0;
+  let in_drawer = cid.reduce((acc,elm) =>{
+    return parseFloat(acc) + elm[1]*100;
+  },0);
+  in_drawer = in_drawer / 100;
+  let result = [];
+  let coins = 0;
+  let drawer = {};
+  let currency = {
+  'ONE HUNDRED': 100,
+  'TWENTY': 20,
+  'TEN': 10,
+  'FIVE': 5,
+  'ONE': 1,
+  'QUARTER': 0.25,
+  'DIME': 0.1,
+  'NICKEL': 0.05,
+  'PENNY': 0.01 };
+// Put all the cid inside an object 
+for(let j = cid.length - 1; j >= 0; j--){
+  drawer[cid[j][0]] = cid[j][1];
+}
+
+// Iterate through all the currency object
+  for(let i in currency){
+
+// Check if the change less than the current currency or not
+    if(change >= currency[i]){
+      change = change * 1000;
+      current_cur = currency[i] * 1000;
+      reminder = change - current_cur;
+      coins = parseInt(change / current_cur);
+      console.log('---------');
+      console.log(change);
+      console.log(current_cur);
+      console.log(reminder/1000);
+      change = change / 1000;
+
+      //Check whether there is enough change of the current currency  inside the drwer or not.
+          // if not then take the whole amount of the current currency that exist inside the drawer.
+          if(coins * currency[i] > drawer[i]){
+            result.push([i, drawer[i]]);
+            change = change * 1000 - drawer[i] * 1000;
+            change = change / 1000;
+            coins = 0;
+          // if there is enough currency then take what is necessary 
+          }else{
+          change = change * 1000;
+          current_cur = currency[i] * 1000;
+          change = change - coins*current_cur;
+          change = change / 1000;
+          result.push([i, currency[i]*coins]);
+          coins = 0;}
+  }}
+  console.log(result);
+  
+  
+  console.log(in_drawer + '  Change: ' + change);
+
+  if (change == 0){
+    return {statue:'OPEN', change: []};}
+}
+
+checkCashRegister(3.26, 100, [["PENNY", 1.01], ["NICKEL", 2.05], ["DIME", 3.1], ["QUARTER", 4.25], ["ONE", 90], ["FIVE", 55], ["TEN", 20], ["TWENTY", 60], ["ONE HUNDRED", 100]])
